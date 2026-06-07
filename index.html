@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nebula Digital — Agencia de Marketing Digital</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --bg2: #0f0f1a;
+      --purple: #7c3aed;
+      --blue: #2563eb;
+      --purple-light: #9f5ff0;
+      --white: #ffffff;
+      --gray: #94a3b8;
+      --gray-dark: #1e1e2e;
+      --glass: rgba(255,255,255,0.05);
+      --glass-border: rgba(255,255,255,0.08);
+      --gradient: linear-gradient(135deg, #7c3aed, #2563eb);
+      --gradient-text: linear-gradient(135deg, #c084fc, #60a5fa);
+      --font: 'Plus Jakarta Sans', sans-serif;
+      --radius: 16px;
+      --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--white);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* ─── SCROLLBAR ─────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 3px; }
+
+    /* ─── CANVAS STARS ──────────────────────── */
+    #starfield {
+      position: fixed; inset: 0; z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ─── NOISE OVERLAY ─────────────────────── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 1;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      opacity: 0.4;
+    }
+
+    /* ─── NAV ───────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 0 clamp(1.5rem, 5vw, 5rem);
+      height: 72px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(10,10,15,0.7);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      transition: var(--transition);
+    }
+
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 1.35rem; font-weight: 800; letter-spacing: -0.5px;
+      text-decoration: none; color: var(--white);
+    }
+
+    .nav-logo-icon {
+      width: 36px; height: 36px;
+      background: var(--gradient);
+      border-radius: 10px;
+      display: grid; place-items: center;
+    }
+
+    .nav-links {
+      display: flex; align-items: center; gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--gray); text-decoration: none; font-size: 0.9rem; font-weight: 500;
+      transition: color var(--transition);
+    }
+    .nav-links a:hover { color: var(--white); }
+
+    .nav-cta {
+      padding: 0.55rem 1.4rem;
+      background: var(--gradient);
+      border: none; border-radius: 50px;
+      color: var(--white); font-family: var(--font); font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; transition: opacity var(--transition), box-shadow var(--transition);
+      text-decoration: none;
+    }
+    .nav-cta:hover { opacity: 0.9; box-shadow: 0 0 20px rgba(124,58,237,0.5); }
+
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px; cursor: pointer;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--white); border-radius: 2px;
+      transition: var(--transition);
+    }
+
+    /* ─── HERO ──────────────────────────────── */
+    #hero {
+      position: relative; z-index: 2;
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 6rem clamp(1.5rem, 5vw, 5rem) 4rem;
+      overflow: hidden;
+    }
+
+    .hero-glow {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+    }
+    .hero-glow-1 {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(124,58,237,0.25) 0%, transparent 70%);
+      top: -100px; left: -150px;
+      animation: float1 8s ease-in-out infinite;
+    }
+    .hero-glow-2 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(37,99,235,0.2) 0%, transparent 70%);
+      bottom: -50px; right: -100px;
+      animation: float2 10s ease-in-out infinite;
+    }
+
+    @keyframes float1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(30px,-40px)} }
+    @keyframes float2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-20px,30px)} }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 0.4rem 1rem;
+      background: rgba(124,58,237,0.15);
+      border: 1px solid rgba(124,58,237,0.3);
+      border-radius: 50px;
+      font-size: 0.8rem; font-weight: 600; color: #c084fc;
+      letter-spacing: 0.5px; text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .badge-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #c084fc;
+      box-shadow: 0 0 8px #c084fc;
+      animation: pulse 2s ease infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    .hero-title {
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -2px;
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.8s 0.15s ease both;
+    }
+
+    .hero-title .gradient-text {
+      background: var(--gradient-text);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      max-width: 580px;
+      font-size: clamp(1rem, 2vw, 1.15rem);
+      color: var(--gray);
+      margin-bottom: 2.5rem;
+      animation: fadeUp 0.8s 0.25s ease both;
+    }
+
+    .hero-actions {
+      display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: center;
+      animation: fadeUp 0.8s 0.35s ease both;
+    }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 0.85rem 2rem;
+      background: var(--gradient);
+      border: none; border-radius: 50px;
+      color: var(--white); font-family: var(--font); font-size: 1rem; font-weight: 600;
+      cursor: pointer; text-decoration: none;
+      transition: box-shadow var(--transition), transform var(--transition);
+      position: relative; overflow: hidden;
+    }
+    .btn-primary::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0.1);
+      opacity: 0; transition: opacity var(--transition);
+    }
+    .btn-primary:hover::after { opacity: 1; }
+    .btn-primary:hover {
+      box-shadow: 0 0 30px rgba(124,58,237,0.6), 0 0 60px rgba(124,58,237,0.2);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 0.85rem 2rem;
+      background: transparent;
+      border: 1px solid var(--glass-border);
+      border-radius: 50px;
+      color: var(--white); font-family: var(--font); font-size: 1rem; font-weight: 500;
+      cursor: pointer; text-decoration: none;
+      transition: border-color var(--transition), background var(--transition);
+      backdrop-filter: blur(10px);
+    }
+    .btn-outline:hover {
+      border-color: rgba(124,58,237,0.5);
+      background: rgba(124,58,237,0.08);
+    }
+
+    .hero-brands {
+      margin-top: 4rem;
+      display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; justify-content: center;
+      animation: fadeUp 0.8s 0.45s ease both;
+    }
+
+    .hero-brands-label {
+      font-size: 0.8rem; color: var(--gray); text-transform: uppercase; letter-spacing: 1px;
+    }
+
+    .brands-row {
+      display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; justify-content: center;
+    }
+
+    .brand-item {
+      font-size: 0.9rem; font-weight: 600; color: rgba(255,255,255,0.25);
+      letter-spacing: 1px; text-transform: uppercase;
+      transition: color var(--transition);
+    }
+    .brand-item:hover { color: rgba(255,255,255,0.5); }
+
+    /* ─── SECTION BASE ──────────────────────── */
+    section { position: relative; z-index: 2; }
+
+    .section-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 5rem clamp(1.5rem, 5vw, 3rem);
+    }
+
+    .section-tag {
+      display: inline-block;
+      padding: 0.3rem 0.9rem;
+      background: rgba(124,58,237,0.15);
+      border: 1px solid rgba(124,58,237,0.3);
+      border-radius: 50px;
+      font-size: 0.75rem; font-weight: 600; color: #c084fc;
+      letter-spacing: 1px; text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+
+    .section-sub {
+      font-size: 1rem;
+      color: var(--gray);
+      max-width: 520px;
+    }
+
+    .section-header {
+      margin-bottom: 3.5rem;
+    }
+
+    /* ─── SERVICES ──────────────────────────── */
+    #services { background: var(--bg2); }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .service-card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      backdrop-filter: blur(20px);
+      transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+      cursor: default;
+      position: relative;
+      overflow: hidden;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(124,58,237,0.5), transparent);
+      opacity: 0; transition: opacity var(--transition);
+    }
+    .service-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(124,58,237,0.3);
+      box-shadow: 0 20px 60px rgba(124,58,237,0.12);
+    }
+    .service-card:hover::before { opacity: 1; }
+
+    .service-icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      background: var(--gradient);
+      display: grid; place-items: center;
+      margin-bottom: 1.25rem;
+      font-size: 1.4rem;
+      box-shadow: 0 8px 24px rgba(124,58,237,0.3);
+    }
+
+    .service-card h3 {
+      font-size: 1.1rem; font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .service-card p {
+      font-size: 0.9rem; color: var(--gray); line-height: 1.6;
+      margin-bottom: 1.25rem;
+    }
+
+    .service-features {
+      display: flex; flex-direction: column; gap: 0.4rem;
+    }
+
+    .service-feature {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.82rem; color: var(--gray);
+    }
+    .service-feature::before {
+      content: '';
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--purple-light);
+      flex-shrink: 0;
+    }
+
+    /* ─── METRICS ───────────────────────────── */
+    #metrics {
+      background: linear-gradient(135deg, rgba(124,58,237,0.08) 0%, rgba(37,99,235,0.08) 100%);
+      border-top: 1px solid var(--glass-border);
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      text-align: center;
+    }
+
+    .metric-card {
+      padding: 2rem 1rem;
+    }
+
+    .metric-number {
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: -2px;
+      background: var(--gradient-text);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .metric-label {
+      font-size: 0.95rem; color: var(--gray); font-weight: 500;
+    }
+
+    .metric-sublabel {
+      font-size: 0.8rem; color: rgba(148,163,184,0.6); margin-top: 0.25rem;
+    }
+
+    /* ─── TESTIMONIALS ──────────────────────── */
+    #testimonials { background: var(--bg2); }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .testimonial-card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      backdrop-filter: blur(20px);
+      transition: transform var(--transition), border-color var(--transition);
+    }
+    .testimonial-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(124,58,237,0.25);
+    }
+
+    .testimonial-stars {
+      display: flex; gap: 3px; margin-bottom: 1rem;
+      font-size: 0.9rem;
+      color: #f59e0b;
+    }
+
+    .testimonial-text {
+      font-size: 0.95rem; color: var(--gray);
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+      font-style: italic;
+    }
+
+    .testimonial-author {
+      display: flex; align-items: center; gap: 12px;
+    }
+
+    .author-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--gradient);
+      display: grid; place-items: center;
+      font-size: 1rem; font-weight: 700;
+      flex-shrink: 0;
+      border: 2px solid rgba(124,58,237,0.4);
+    }
+
+    .author-info h4 {
+      font-size: 0.95rem; font-weight: 700;
+    }
+    .author-info span {
+      font-size: 0.8rem; color: var(--gray);
+    }
+
+    /* ─── PRICING ───────────────────────────── */
+    #pricing { background: var(--bg); }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    .pricing-card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 2.5rem 2rem;
+      backdrop-filter: blur(20px);
+      transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pricing-card.popular {
+      border-color: rgba(124,58,237,0.4);
+      background: rgba(124,58,237,0.07);
+      transform: scale(1.03);
+    }
+    .pricing-card.popular::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--gradient);
+    }
+    .pricing-card:hover:not(.popular) {
+      transform: translateY(-4px);
+      border-color: rgba(124,58,237,0.25);
+      box-shadow: 0 20px 50px rgba(124,58,237,0.1);
+    }
+    .pricing-card.popular:hover {
+      box-shadow: 0 20px 60px rgba(124,58,237,0.25);
+    }
+
+    .popular-badge {
+      position: absolute; top: 1.25rem; right: 1.25rem;
+      padding: 0.3rem 0.8rem;
+      background: var(--gradient);
+      border-radius: 50px;
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+    }
+
+    .pricing-name {
+      font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
+      color: var(--gray); margin-bottom: 0.75rem;
+    }
+
+    .pricing-price {
+      display: flex; align-items: flex-end; gap: 4px;
+      margin-bottom: 0.5rem;
+    }
+
+    .price-amount {
+      font-size: 3rem; font-weight: 800; letter-spacing: -2px; line-height: 1;
+      background: var(--gradient-text);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .price-currency {
+      font-size: 1.2rem; font-weight: 700; color: var(--gray);
+      padding-bottom: 0.4rem;
+    }
+
+    .price-period {
+      font-size: 0.85rem; color: var(--gray); padding-bottom: 0.4rem;
+    }
+
+    .pricing-desc {
+      font-size: 0.88rem; color: var(--gray); margin-bottom: 2rem;
+      line-height: 1.5;
+    }
+
+    .pricing-features {
+      display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem;
+    }
+
+    .pricing-feature {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.9rem;
+    }
+
+    .check-icon {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: rgba(124,58,237,0.2);
+      border: 1px solid rgba(124,58,237,0.4);
+      display: grid; place-items: center; flex-shrink: 0;
+      font-size: 0.65rem; color: #c084fc;
+    }
+
+    .pricing-card.popular .check-icon {
+      background: rgba(124,58,237,0.3);
+      border-color: rgba(124,58,237,0.6);
+    }
+
+    .pricing-btn {
+      width: 100%;
+      padding: 0.85rem;
+      border-radius: 50px;
+      font-family: var(--font); font-size: 0.95rem; font-weight: 600;
+      cursor: pointer; transition: all var(--transition);
+      text-align: center; text-decoration: none;
+      display: block;
+    }
+
+    .pricing-btn-outline {
+      background: transparent;
+      border: 1px solid var(--glass-border);
+      color: var(--white);
+    }
+    .pricing-btn-outline:hover {
+      border-color: rgba(124,58,237,0.5);
+      background: rgba(124,58,237,0.08);
+    }
+
+    .pricing-btn-solid {
+      background: var(--gradient);
+      border: none;
+      color: var(--white);
+    }
+    .pricing-btn-solid:hover {
+      box-shadow: 0 0 25px rgba(124,58,237,0.5);
+      opacity: 0.9;
+    }
+
+    /* ─── CTA BANNER ────────────────────────── */
+    #cta-banner {
+      background: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(37,99,235,0.15));
+      border-top: 1px solid var(--glass-border);
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .cta-inner {
+      text-align: center;
+      max-width: 680px; margin: 0 auto;
+      padding: 5rem clamp(1.5rem, 5vw, 3rem);
+    }
+
+    .cta-inner .section-title { margin-bottom: 1rem; }
+    .cta-inner .section-sub { margin: 0 auto 2.5rem; }
+
+    /* ─── FOOTER ────────────────────────────── */
+    footer {
+      background: var(--bg2);
+      border-top: 1px solid var(--glass-border);
+      position: relative; z-index: 2;
+    }
+
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto;
+      padding: 4rem clamp(1.5rem, 5vw, 3rem) 2rem;
+    }
+
+    .footer-top {
+      display: grid;
+      grid-template-columns: 2fr repeat(3, 1fr);
+      gap: 3rem;
+      margin-bottom: 3rem;
+    }
+
+    .footer-brand p {
+      font-size: 0.9rem; color: var(--gray); margin-top: 1rem; max-width: 280px;
+      line-height: 1.7;
+    }
+
+    .footer-socials {
+      display: flex; gap: 10px; margin-top: 1.5rem;
+    }
+
+    .social-btn {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      display: grid; place-items: center;
+      cursor: pointer; transition: all var(--transition);
+      font-size: 1rem;
+      color: var(--gray);
+      text-decoration: none;
+    }
+    .social-btn:hover {
+      background: rgba(124,58,237,0.2);
+      border-color: rgba(124,58,237,0.4);
+      color: var(--white);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(124,58,237,0.2);
+    }
+
+    .footer-col h4 {
+      font-size: 0.9rem; font-weight: 700; margin-bottom: 1.25rem;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+
+    .footer-links {
+      display: flex; flex-direction: column; gap: 0.7rem; list-style: none;
+    }
+
+    .footer-links a {
+      font-size: 0.88rem; color: var(--gray); text-decoration: none;
+      transition: color var(--transition);
+    }
+    .footer-links a:hover { color: var(--white); }
+
+    .footer-bottom {
+      padding-top: 2rem;
+      border-top: 1px solid var(--glass-border);
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-copy {
+      font-size: 0.85rem; color: var(--gray);
+    }
+
+    .footer-legal {
+      display: flex; gap: 1.5rem; list-style: none;
+    }
+
+    .footer-legal a {
+      font-size: 0.82rem; color: var(--gray); text-decoration: none;
+      transition: color var(--transition);
+    }
+    .footer-legal a:hover { color: var(--white); }
+
+    /* ─── ANIMATIONS ────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1; transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+    .reveal-delay-5 { transition-delay: 0.5s; }
+
+    /* ─── DIVIDER ───────────────────────────── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
+      margin: 0;
+    }
+
+    /* ─── RESPONSIVE ────────────────────────── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+
+      .nav-links.open {
+        display: flex; flex-direction: column;
+        position: fixed; top: 72px; left: 0; right: 0;
+        background: rgba(10,10,15,0.95);
+        backdrop-filter: blur(20px);
+        padding: 1.5rem;
+        border-bottom: 1px solid var(--glass-border);
+        gap: 1.25rem;
+      }
+
+      .footer-top {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .pricing-card.popular { transform: scale(1); }
+
+      .hero-brands { flex-direction: column; gap: 1rem; }
+    }
+
+    @media (max-width: 480px) {
+      .footer-top {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Stars canvas -->
+<canvas id="starfield"></canvas>
+
+<!-- ─── NAV ─────────────────────────────────── -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-icon">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M10 2L12.5 7.5H18L13.5 11L15.5 17L10 13.5L4.5 17L6.5 11L2 7.5H7.5L10 2Z" fill="white"/>
+      </svg>
+    </div>
+    Nebula Digital
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#services">Servicios</a></li>
+    <li><a href="#metrics">Resultados</a></li>
+    <li><a href="#testimonials">Testimonios</a></li>
+    <li><a href="#pricing">Precios</a></li>
+  </ul>
+  <a href="#pricing" class="nav-cta">Empezar ahora</a>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- ─── HERO ─────────────────────────────────── -->
+<section id="hero">
+  <div class="hero-glow hero-glow-1"></div>
+  <div class="hero-glow hero-glow-2"></div>
+
+  <div class="hero-badge">
+    <span class="badge-dot"></span>
+    Agencia #1 en Marketing Digital
+  </div>
+
+  <h1 class="hero-title">
+    Impulsamos marcas<br>
+    al <span class="gradient-text">siguiente nivel</span>
+  </h1>
+
+  <p class="hero-sub">
+    Estrategias digitales que convierten audiencias en clientes reales.
+    Resultados medibles, ROI garantizado, crecimiento exponencial.
+  </p>
+
+  <div class="hero-actions">
+    <a href="#pricing" class="btn-primary">
+      Solicita tu propuesta
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+    <a href="#services" class="btn-outline">Ver servicios</a>
+  </div>
+
+  <div class="hero-brands">
+    <span class="hero-brands-label">Con la confianza de</span>
+    <div class="brands-row">
+      <span class="brand-item">TechCorp</span>
+      <span class="brand-item">Nexaflow</span>
+      <span class="brand-item">Stardust</span>
+      <span class="brand-item">Orizon</span>
+      <span class="brand-item">Quantum</span>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SERVICES ──────────────────────────────── -->
+<section id="services">
+  <div class="section-inner">
+    <div class="section-header reveal">
+      <span class="section-tag">Servicios</span>
+      <h2 class="section-title">Todo lo que necesitas<br>para crecer en digital</h2>
+      <p class="section-sub">Soluciones integrales diseñadas para maximizar tu presencia online y generar resultados reales.</p>
+    </div>
+
+    <div class="services-grid">
+      <div class="service-card reveal reveal-delay-1">
+        <div class="service-icon">🔍</div>
+        <h3>SEO & Posicionamiento</h3>
+        <p>Lleva tu web a los primeros resultados de Google con estrategias de SEO técnico, on-page y link building.</p>
+        <div class="service-features">
+          <span class="service-feature">Auditoría SEO completa</span>
+          <span class="service-feature">Estrategia de keywords</span>
+          <span class="service-feature">Link building autoridad</span>
+          <span class="service-feature">Reportes mensuales</span>
+        </div>
+      </div>
+
+      <div class="service-card reveal reveal-delay-2">
+        <div class="service-icon">📱</div>
+        <h3>Redes Sociales</h3>
+        <p>Gestión integral de tus redes sociales con contenido estratégico que conecta con tu audiencia ideal.</p>
+        <div class="service-features">
+          <span class="service-feature">Community management</span>
+          <span class="service-feature">Calendario de contenidos</span>
+          <span class="service-feature">Diseño gráfico creativo</span>
+          <span class="service-feature">Analítica y reporting</span>
+        </div>
+      </div>
+
+      <div class="service-card reveal reveal-delay-3">
+        <div class="service-icon">💻</div>
+        <h3>Diseño Web</h3>
+        <p>Webs y landing pages de alto impacto con diseño moderno, optimizadas para convertir visitas en ventas.</p>
+        <div class="service-features">
+          <span class="service-feature">Diseño UI/UX premium</span>
+          <span class="service-feature">Desarrollo responsive</span>
+          <span class="service-feature">Optimización CRO</span>
+          <span class="service-feature">Velocidad de carga óptima</span>
+        </div>
+      </div>
+
+      <div class="service-card reveal reveal-delay-1">
+        <div class="service-icon">🎯</div>
+        <h3>Publicidad Digital</h3>
+        <p>Campañas de Google Ads, Meta Ads y más con segmentación precisa para maximizar tu ROI publicitario.</p>
+        <div class="service-features">
+          <span class="service-feature">Google & Meta Ads</span>
+          <span class="service-feature">Remarketing avanzado</span>
+          <span class="service-feature">A/B testing continuo</span>
+          <span class="service-feature">Optimización de ROAS</span>
+        </div>
+      </div>
+
+      <div class="service-card reveal reveal-delay-2">
+        <div class="service-icon">🎬</div>
+        <h3>Video Corporativo</h3>
+        <p>Producción de vídeo profesional para potenciar tu marca, desde reels virales hasta brand films.</p>
+        <div class="service-features">
+          <span class="service-feature">Producción audiovisual</span>
+          <span class="service-feature">Motion graphics & animación</span>
+          <span class="service-feature">Vídeos para RRSS & web</span>
+          <span class="service-feature">Edición profesional</span>
+        </div>
+      </div>
+
+      <div class="service-card reveal reveal-delay-3">
+        <div class="service-icon">🚀</div>
+        <h3>Kit Digital</h3>
+        <p>Soluciones acogidas a las ayudas del Kit Digital para digitalizar tu negocio sin coste adicional.</p>
+        <div class="service-features">
+          <span class="service-feature">Asesoría Kit Digital</span>
+          <span class="service-feature">Gestión de solicitudes</span>
+          <span class="service-feature">Implementación completa</span>
+          <span class="service-feature">Seguimiento del proyecto</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── METRICS ────────────────────────────────── -->
+<section id="metrics">
+  <div class="section-inner">
+    <div class="metrics-grid">
+      <div class="metric-card reveal reveal-delay-1">
+        <div class="metric-number" data-target="350">0</div>
+        <div class="metric-label">Clientes activos</div>
+        <div class="metric-sublabel">en toda España</div>
+      </div>
+      <div class="metric-card reveal reveal-delay-2">
+        <div class="metric-number" data-target="1200">0</div>
+        <div class="metric-label">Proyectos completados</div>
+        <div class="metric-sublabel">desde 2018</div>
+      </div>
+      <div class="metric-card reveal reveal-delay-3">
+        <div class="metric-number" data-target="380">0</div>
+        <div class="metric-label">% ROI promedio</div>
+        <div class="metric-sublabel">en campañas digitales</div>
+      </div>
+      <div class="metric-card reveal reveal-delay-4">
+        <div class="metric-number" data-target="98">0</div>
+        <div class="metric-label">% satisfacción</div>
+        <div class="metric-sublabel">de nuestros clientes</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── TESTIMONIALS ──────────────────────────── -->
+<section id="testimonials">
+  <div class="section-inner">
+    <div class="section-header reveal" style="text-align:center; display:flex; flex-direction:column; align-items:center;">
+      <span class="section-tag">Testimonios</span>
+      <h2 class="section-title">Lo que dicen nuestros clientes</h2>
+      <p class="section-sub">Historias reales de empresas que han transformado su presencia digital con Nebula.</p>
+    </div>
+
+    <div class="testimonials-grid">
+      <div class="testimonial-card reveal reveal-delay-1">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"Nebula Digital triplicó nuestro tráfico orgánico en 6 meses. Su estrategia SEO fue absolutamente transformadora para nuestro negocio. El equipo es profesional, proactivo y orientado a resultados."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">MR</div>
+          <div class="author-info">
+            <h4>María Rodríguez</h4>
+            <span>CEO — TechCorp España</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card reveal reveal-delay-2">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"Las campañas de Meta Ads que gestionan para nosotros han reducido nuestro coste por adquisición un 45%. Resultados increíbles desde el primer mes. Totalmente recomendados."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">AL</div>
+          <div class="author-info">
+            <h4>Alejandro López</h4>
+            <span>Director Marketing — Nexaflow</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card reveal reveal-delay-3">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"El rediseño de nuestra web aumentó la tasa de conversión un 230%. El equipo de diseño entendió perfectamente nuestra visión y la llevó a otro nivel. Una inversión que se paga sola."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">SG</div>
+          <div class="author-info">
+            <h4>Sara García</h4>
+            <span>Fundadora — Stardust Studio</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card reveal reveal-delay-1">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"Gracias al Kit Digital gestionado por Nebula, digitalizamos nuestra empresa sin coste. El proceso fue transparente y rápido. Ahora tenemos una web y redes que realmente funcionan."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">JM</div>
+          <div class="author-info">
+            <h4>Javier Martín</h4>
+            <span>Propietario — Muebles Orizon</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card reveal reveal-delay-2">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"El vídeo corporativo que produjeron para nuestro lanzamiento superó las 2 millones de visualizaciones en Instagram. Creatividad y producción al más alto nivel. Impresionante."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">CP</div>
+          <div class="author-info">
+            <h4>Carlos Pérez</h4>
+            <span>CMO — Quantum Ventures</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card reveal reveal-delay-3">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"En solo 3 meses pasamos de 500 a 25.000 seguidores en Instagram con contenido de calidad. Su gestión de redes es excepcional. El engagement que conseguimos es extraordinario."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">LT</div>
+          <div class="author-info">
+            <h4>Laura Torres</h4>
+            <span>Brand Manager — FoodStar</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PRICING ────────────────────────────────── -->
+<section id="pricing">
+  <div class="section-inner">
+    <div class="section-header reveal" style="text-align:center; display:flex; flex-direction:column; align-items:center;">
+      <span class="section-tag">Precios</span>
+      <h2 class="section-title">Planes adaptados a tu negocio</h2>
+      <p class="section-sub">Sin permanencias, sin sorpresas. Elige el plan que mejor se adapte a tus objetivos.</p>
+    </div>
+
+    <div class="pricing-grid">
+      <!-- Starter -->
+      <div class="pricing-card reveal reveal-delay-1">
+        <div class="pricing-name">Starter</div>
+        <div class="pricing-price">
+          <span class="price-currency">€</span>
+          <span class="price-amount">497</span>
+          <span class="price-period">/mes</span>
+        </div>
+        <p class="pricing-desc">Perfecto para pymes y autónomos que quieren establecer su presencia digital.</p>
+        <div class="pricing-features">
+          <div class="pricing-feature">
+            <div class="check-icon">✓</div>
+            Gestión de 2 redes sociales
+          </div>
+          <div class="pricing-feature">
+            <div class="check-icon">✓</div>
+            12 publicaciones/mes
+          </div>
+          <div class="pricing-feature">
+            <div class="check-icon">✓</div>
+            SEO básico on-page
+          </div>
+          <div class="pricing-feature">
+            <div class="check-icon">✓</div>
+            1 campaña Google Ads
+          </div>
+          <div class="pricing-feature">
+            <div class="check-icon">✓</div>
+            Reporte mensual
+          </div>
+          <div class="pricing-feature">
+            <div class="check-icon">✓</div>
+            Soporte por email
+          </div>
+        </div>
+        <a href="#" class="pricing-btn pricing-btn-outline">Empezar con Starter</a>
+      </div>
+
+      <!-- Growth (popular) -->
+      <div class="pricing-card popular reveal reveal-delay-2">
+        <div class="popular-badge">Más popular</div>
+        <div class="pricing-name">Growth</div>
+        <div class="pricing-price">
+          <span class="price-currency">€</span>
+          <span class="price-amount">997</span>
+          <span class="price-period">/mes</span>
+        </div>
+        <p class="pricing-desc">Para empresas en crecimiento que buscan resultados rápidos y escalables.</p>
+        <div class="pricing-features">
+          <div class="pricing-feature">
+            <div class="check-icon">✓</div>
+            Gestión de 4 redes sociales
+          </div>
+          <div class="pricing-feature">
+            <div class="check-icon">✓</div>
+            30 publicaciones/mes
+          </div>
+          <div class="pricing-feature">
+            <div class="check-icon">✓</div>
+            SEO avanzado + link building
+          </div>
+          <div class="pricing-feature">
+            <div class="check-icon">✓</div>
+            Google Ads + Meta Ads
+          </div>
+          <div class="pricing-feature">
+            <div class="check-icon">✓</div>
+            2 vídeos mensuales
+          </div>
+          <div class="pricing-feature">
+            <div class="check-icon">✓</div>
+            Reunión estratégica semanal
+          </div>
+          <div class="pricing-feature">
+            <div class="check-icon">✓</div>
+            Dashboard en tiempo real
+          </div>
+          <div class="pricing-feature">
+            <div class="check-icon">✓</div>
+            Soporte prioritario 24/5
+          </div>
+        </div>
+        <a href="#" class="pricing-btn pricing-btn-solid">Empezar con Growth</a>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="pricing-card reveal reveal-delay-3">
+        <div class="pricing-name">Enterprise</div>
+        <div class="pricing-price">
+          <span class="price-currency">€</span>
+          <span class="price-amount">2.497</span>
+          <span class="price-period">/mes</span>
+        </div>
+        <p class="pricing-desc">Solución 360° para grandes empresas con objetivos ambiciosos de crecimiento.</p>
+        <div class="pricing-features">
+          <div class="pricing-feature">
+            <div class="check-icon">✓</div>
+            Todas las redes sociales
+          </div>
+          <div class="pricing-feature">
+            <div class="check-icon">✓</div>
+            Contenido ilimitado
+          </div>
+          <div class="pricing-feature">
+            <div class="check-icon">✓</div>
+            SEO + SEM completo
+          </div>
+          <div class="pricing-feature">
+            <div class="check-icon">✓</div>
+            Todas las plataformas Ads
+          </div>
+          <div class="pricing-feature">
+            <div class="check-icon">✓</div>
+            Producción video premium
+          </div>
+          <div class="pricing-feature">
+            <div class="check-icon">✓</div>
+            Equipo dedicado exclusivo
+          </div>
+          <div class="pricing-feature">
+            <div class="check-icon">✓</div>
+            Diseño web continuo
+          </div>
+          <div class="pricing-feature">
+            <div class="check-icon">✓</div>
+            Soporte 24/7 con SLA
+          </div>
+        </div>
+        <a href="#" class="pricing-btn pricing-btn-outline">Solicitar propuesta</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA BANNER ─────────────────────────────── -->
+<section id="cta-banner">
+  <div class="cta-inner reveal">
+    <span class="section-tag">¿Listo para crecer?</span>
+    <h2 class="section-title">Empieza tu transformación<br>digital hoy mismo</h2>
+    <p class="section-sub">Agenda una consultoría gratuita de 30 minutos y descubre cómo podemos hacer crecer tu negocio.</p>
+    <div class="hero-actions" style="margin-top: 2.5rem; justify-content: center;">
+      <a href="#" class="btn-primary">
+        Agenda tu consultoría gratis
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+      <a href="tel:+34900000000" class="btn-outline">📞 Llámanos</a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─────────────────────────────────── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo" style="text-decoration:none">
+          <div class="nav-logo-icon">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M10 2L12.5 7.5H18L13.5 11L15.5 17L10 13.5L4.5 17L6.5 11L2 7.5H7.5L10 2Z" fill="white"/>
+            </svg>
+          </div>
+          Nebula Digital
+        </a>
+        <p>Agencia de marketing digital especializada en transformar marcas y escalar negocios a través de estrategias digitales de alto impacto.</p>
+        <div class="footer-socials">
+          <a href="#" class="social-btn" aria-label="Instagram">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
+          </a>
+          <a href="#" class="social-btn" aria-label="LinkedIn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="3"/><path d="M8 11v5M8 8v.01M12 16v-5M12 11a3 3 0 016 0v5"/></svg>
+          </a>
+          <a href="#" class="social-btn" aria-label="Twitter/X">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.3 5.71a.996.996 0 00-1.41 0L12 10.59 7.11 5.7A.996.996 0 105.7 7.11L10.59 12 5.7 16.89a.996.996 0 101.41 1.41L12 13.41l4.89 4.89a.996.996 0 101.41-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z"/></svg>
+          </a>
+          <a href="#" class="social-btn" aria-label="YouTube">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="3"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zM17.5 6.5h.01M10 15l5-3-5-3v6z" fill="currentColor" stroke="none"/><path d="M2 7s0-5 10-5 10 5 10 5v14a3 3 0 01-3 3H5a3 3 0 01-3-3V7z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Servicios</h4>
+        <ul class="footer-links">
+          <li><a href="#">SEO & Posicionamiento</a></li>
+          <li><a href="#">Redes Sociales</a></li>
+          <li><a href="#">Diseño Web</a></li>
+          <li><a href="#">Publicidad Digital</a></li>
+          <li><a href="#">Video Corporativo</a></li>
+          <li><a href="#">Kit Digital</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Empresa</h4>
+        <ul class="footer-links">
+          <li><a href="#">Sobre nosotros</a></li>
+          <li><a href="#">Casos de éxito</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Trabaja con nosotros</a></li>
+          <li><a href="#">Partners</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Contacto</h4>
+        <ul class="footer-links">
+          <li><a href="#">hola@nebuladigital.es</a></li>
+          <li><a href="#">+34 900 000 000</a></li>
+          <li><a href="#">Madrid, España</a></li>
+          <li><a href="#">Agenda reunión</a></li>
+          <li><a href="#">WhatsApp</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2024 Nebula Digital. Todos los derechos reservados.</p>
+      <ul class="footer-legal">
+        <li><a href="#">Política de privacidad</a></li>
+        <li><a href="#">Términos de uso</a></li>
+        <li><a href="#">Cookies</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* ─── STARFIELD ─────────────────────────────── */
+  const canvas = document.getElementById('starfield');
+  const ctx = canvas.getContext('2d');
+  let stars = [], W, H;
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function initStars() {
+    stars = [];
+    const count = Math.floor((W * H) / 3000);
+    for (let i = 0; i < count; i++) {
+      stars.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 1.5 + 0.2,
+        alpha: Math.random() * 0.7 + 0.1,
+        speed: Math.random() * 0.3 + 0.05,
+        phase: Math.random() * Math.PI * 2,
+        color: Math.random() > 0.7 ? '#c084fc' : Math.random() > 0.5 ? '#60a5fa' : '#ffffff'
+      });
+    }
+  }
+
+  let frame = 0;
+  function drawStars() {
+    ctx.clearRect(0, 0, W, H);
+    frame += 0.01;
+    for (const s of stars) {
+      const twinkle = Math.sin(frame * s.speed + s.phase) * 0.3 + 0.7;
+      ctx.globalAlpha = s.alpha * twinkle;
+      ctx.fillStyle = s.color;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(drawStars);
+  }
+
+  resize();
+  initStars();
+  drawStars();
+
+  window.addEventListener('resize', () => { resize(); initStars(); });
+
+  /* ─── SCROLL REVEAL ─────────────────────────── */
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  reveals.forEach(el => observer.observe(el));
+
+  /* ─── COUNTER ANIMATION ─────────────────────── */
+  function animateCounter(el, target, suffix = '') {
+    const duration = 2000;
+    const start = performance.now();
+    const update = (time) => {
+      const elapsed = time - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      const current = Math.round(ease * target);
+      el.textContent = current.toLocaleString('es') + suffix;
+      if (progress < 1) requestAnimationFrame(update);
+    };
+    requestAnimationFrame(update);
+  }
+
+  const metricObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const el = e.target;
+        const target = parseInt(el.dataset.target);
+        const suffix = el.closest('.metric-card').querySelector('.metric-label').textContent.includes('%') ? '%' : '+';
+        animateCounter(el, target, suffix);
+        metricObserver.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  document.querySelectorAll('.metric-number[data-target]').forEach(el => metricObserver.observe(el));
+
+  /* ─── NAV SCROLL ────────────────────────────── */
+  window.addEventListener('scroll', () => {
+    const nav = document.getElementById('navbar');
+    if (window.scrollY > 50) {
+      nav.style.background = 'rgba(10,10,15,0.95)';
+    } else {
+      nav.style.background = 'rgba(10,10,15,0.7)';
+    }
+  });
+
+  /* ─── MOBILE MENU ───────────────────────────── */
+  function toggleMenu() {
+    document.getElementById('navLinks').classList.toggle('open');
+  }
+
+  document.querySelectorAll('#navLinks a').forEach(a => {
+    a.addEventListener('click', () => {
+      document.getElementById('navLinks').classList.remove('open');
+    });
+  });
+</script>
+
+</body>
+</html>
